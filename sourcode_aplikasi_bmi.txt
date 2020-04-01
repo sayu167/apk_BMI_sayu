@@ -1,0 +1,631 @@
+
+////////////////main.dart/////////////////
+//import 'dart:html';
+
+import 'package:flutter/material.dart';
+import 'bmi_result.dart';
+import 'about_me.dart';
+
+void main(){
+  runApp(new MaterialApp(
+    home: new Home(),
+    routes: <String, WidgetBuilder>{
+      '/Halsatu' : (BuildContext context) => new Home(),
+      '/Haldua' : (BuildContext context) => new MyProfil(),
+
+    },
+  ));
+}
+
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => new _HomeState();
+}
+
+class _HomeState extends State<Home> {
+
+  int tinggi = 0;
+  int berat = 0;
+  int tahun = 0;
+
+  String _jk="";
+
+  void _pilihJk(String value){
+    setState(() {
+      _jk = value;
+    });
+  }
+
+  var _nama = new TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        leading: new Icon(Icons.view_list),
+        title: new Text('Menghitung BMI'),
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+        actions: <Widget>[
+          new IconButton(
+            icon: Icon(Icons.person_outline),
+            onPressed: (){
+              Navigator.pushNamed(context, '/Haldua');
+            },
+          )
+        ],
+      ),
+
+      body: ListView(
+        children: <Widget>[
+          new Container(
+            padding: new EdgeInsets.all(20.0),
+            child: new Column(
+              children: <Widget>[
+                new TextField(
+                  controller: _nama,
+                  decoration: new InputDecoration(
+                      hintText: "Masukkan Nama Lengkap",
+                      labelText: "Nama Lengkap",
+                      border: new OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(10.0)
+                      )
+                  ),
+                ),
+
+                new Padding(padding: new EdgeInsets.only(top: 20.0)),
+
+                new TextField(
+                  onChanged: (txt) {
+                    setState(() {
+                      tahun = int.parse(txt);
+                    });
+                  },
+
+                  keyboardType: TextInputType.number,
+                  maxLength: 4,
+                  decoration: new InputDecoration(
+                      hintText: "Masukkan Tahun Lahir",
+                      labelText: "Tahun Lahir",
+                      border: new OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(10.0)
+                      )
+                  ),
+                ),
+                new Padding(padding: new EdgeInsets.only(top: 20.0)),
+
+                new RadioListTile(
+                  value: "Laki-laki",
+                  groupValue: _jk,
+                  title: new Text("Laki-laki"),
+                  onChanged: (String value){
+                    _pilihJk(value);
+                  },
+                  subtitle: new Text("Pilih ini jika Anda Laki-laki"),
+                ),
+                new Padding(padding: new EdgeInsets.only(top: 0.0)),
+                new RadioListTile(
+                  value: "Perempuan",
+                  groupValue: _jk,
+                  title: new Text("Perempuan"),
+                  onChanged: (String value){
+                    _pilihJk(value);
+                  },
+                  subtitle: new Text("Pilih ini jika Anda Perempuan"),
+                ),
+
+                new Padding(padding: new EdgeInsets.only(top: 20.0)),
+
+                new Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        onChanged: (txt) {
+                          setState(() {
+                            tinggi = int.parse(txt);
+                          });
+                        },
+
+                        keyboardType: TextInputType.number,
+                        maxLength: 3,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                        decoration: InputDecoration(
+                            labelText: "Tinggi Badan",
+                            suffix: Text('cm'),
+                            border: new OutlineInputBorder(
+                                borderRadius: new BorderRadius.circular(10.0)
+                            ),
+                            //filled: true,
+                            hintText: 'Tinggi'),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: TextField(
+
+                        onChanged: (txt) {
+                          setState(() {
+                            berat = int.parse(txt);
+                          });
+                        },
+
+                        keyboardType: TextInputType.number,
+                        maxLength: 3,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                        decoration: InputDecoration(
+                            labelText: "Berat Badan",
+                            suffix: Text('kg'),
+                            border: new OutlineInputBorder(
+                                borderRadius: new BorderRadius.circular(10.0)
+                            ),
+                            //filled: true,
+                            hintText: 'Berat'),
+
+                      ),
+                    ),
+                  ],
+                ),
+
+                new Padding(padding: new EdgeInsets.only(top: 20.0)),
+
+
+                Container(
+                  //height: double.infinity,
+                  margin: EdgeInsets.only(left: 10,right: 10,bottom: 20),
+                  child: RaisedButton(
+                    onPressed: () {
+                      var route = new MaterialPageRoute(
+                        builder: (BuildContext) =>
+                        new BMIResult(nama_lengkap : _nama.text,tinggi_badan: tinggi, berat_badan: berat, tahun_lahir: tahun, jk: _jk),
+                      );
+                      Navigator.of(context).push(route);
+                      /*
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BMIResult(tinggi_badan: tinggi, berat_badan: berat)),
+                      );
+                       */
+                    },
+                    padding: EdgeInsets.all(10.0),
+                    color: Colors.blue,
+                    textColor: Colors.white,
+                    child: Text(
+                      'Proses BMI',
+                      style:
+                      TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+//////////////bmi_result.dart//////////////
+//import 'dart:html';
+
+import 'package:flutter/material.dart';
+import 'bmi_result.dart';
+import 'about_me.dart';
+
+void main(){
+  runApp(new MaterialApp(
+    home: new Home(),
+    routes: <String, WidgetBuilder>{
+      '/Halsatu' : (BuildContext context) => new Home(),
+      '/Haldua' : (BuildContext context) => new MyProfil(),
+
+    },
+  ));
+}
+
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => new _HomeState();
+}
+
+class _HomeState extends State<Home> {
+
+  int tinggi = 0;
+  int berat = 0;
+  int tahun = 0;
+
+  String _jk="";
+
+  void _pilihJk(String value){
+    setState(() {
+      _jk = value;
+    });
+  }
+
+  var _nama = new TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        leading: new Icon(Icons.view_list),
+        title: new Text('Menghitung BMI'),
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+        actions: <Widget>[
+          new IconButton(
+            icon: Icon(Icons.person_outline),
+            onPressed: (){
+              Navigator.pushNamed(context, '/Haldua');
+            },
+          )
+        ],
+      ),
+
+      body: ListView(
+        children: <Widget>[
+          new Container(
+            padding: new EdgeInsets.all(20.0),
+            child: new Column(
+              children: <Widget>[
+                new TextField(
+                  controller: _nama,
+                  decoration: new InputDecoration(
+                      hintText: "Masukkan Nama Lengkap",
+                      labelText: "Nama Lengkap",
+                      border: new OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(10.0)
+                      )
+                  ),
+                ),
+
+                new Padding(padding: new EdgeInsets.only(top: 20.0)),
+
+                new TextField(
+                  onChanged: (txt) {
+                    setState(() {
+                      tahun = int.parse(txt);
+                    });
+                  },
+
+                  keyboardType: TextInputType.number,
+                  maxLength: 4,
+                  decoration: new InputDecoration(
+                      hintText: "Masukkan Tahun Lahir",
+                      labelText: "Tahun Lahir",
+                      border: new OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(10.0)
+                      )
+                  ),
+                ),
+                new Padding(padding: new EdgeInsets.only(top: 20.0)),
+
+                new RadioListTile(
+                  value: "Laki-laki",
+                  groupValue: _jk,
+                  title: new Text("Laki-laki"),
+                  onChanged: (String value){
+                    _pilihJk(value);
+                  },
+                  subtitle: new Text("Pilih ini jika Anda Laki-laki"),
+                ),
+                new Padding(padding: new EdgeInsets.only(top: 0.0)),
+                new RadioListTile(
+                  value: "Perempuan",
+                  groupValue: _jk,
+                  title: new Text("Perempuan"),
+                  onChanged: (String value){
+                    _pilihJk(value);
+                  },
+                  subtitle: new Text("Pilih ini jika Anda Perempuan"),
+                ),
+
+                new Padding(padding: new EdgeInsets.only(top: 20.0)),
+
+                new Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        onChanged: (txt) {
+                          setState(() {
+                            tinggi = int.parse(txt);
+                          });
+                        },
+
+                        keyboardType: TextInputType.number,
+                        maxLength: 3,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                        decoration: InputDecoration(
+                            labelText: "Tinggi Badan",
+                            suffix: Text('cm'),
+                            border: new OutlineInputBorder(
+                                borderRadius: new BorderRadius.circular(10.0)
+                            ),
+                            //filled: true,
+                            hintText: 'Tinggi'),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: TextField(
+
+                        onChanged: (txt) {
+                          setState(() {
+                            berat = int.parse(txt);
+                          });
+                        },
+
+                        keyboardType: TextInputType.number,
+                        maxLength: 3,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                        decoration: InputDecoration(
+                            labelText: "Berat Badan",
+                            suffix: Text('kg'),
+                            border: new OutlineInputBorder(
+                                borderRadius: new BorderRadius.circular(10.0)
+                            ),
+                            //filled: true,
+                            hintText: 'Berat'),
+
+                      ),
+                    ),
+                  ],
+                ),
+
+                new Padding(padding: new EdgeInsets.only(top: 20.0)),
+
+
+                Container(
+                  //height: double.infinity,
+                  margin: EdgeInsets.only(left: 10,right: 10,bottom: 20),
+                  child: RaisedButton(
+                    onPressed: () {
+                      var route = new MaterialPageRoute(
+                        builder: (BuildContext) =>
+                        new BMIResult(nama_lengkap : _nama.text,tinggi_badan: tinggi, berat_badan: berat, tahun_lahir: tahun, jk: _jk),
+                      );
+                      Navigator.of(context).push(route);
+                      /*
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BMIResult(tinggi_badan: tinggi, berat_badan: berat)),
+                      );
+                       */
+                    },
+                    padding: EdgeInsets.all(10.0),
+                    color: Colors.blue,
+                    textColor: Colors.white,
+                    child: Text(
+                      'Proses BMI',
+                      style:
+                      TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/////////////////////about_me.dart//////////////////////
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class MyProfil extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return
+      new Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.blue,
+          title: Text("About Me"),
+          centerTitle: true,
+        ),
+        body: ListView(
+          children: <Widget>[
+            Container(
+              color: Colors.white,
+              child: Stack(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 30),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        height: 200,
+                        width: 200,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            image: DecorationImage(image: AssetImage('images/sayu.JPG'),
+                                fit: BoxFit.cover
+                            )
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Container(
+              color: Colors.white,
+              child: Column(
+
+                children: <Widget>[
+                  SizedBox(height: 20),
+                  Text('Sayu Putu Gita Arini',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.blue,
+                    ),
+                  ),
+                  SizedBox(height: 5,child: Container(
+                    color: Colors.white,
+                  ),),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('sayuputu444@gmail.com',
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black.withOpacity(0.6)
+                        ),
+                      )
+
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 30, right: 50, left: 50),
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blue),
+                            //color: Colors.green,
+                            borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+
+                          ),
+
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              children: <Widget>[
+                                Icon(Icons.my_location,
+                                    color: Colors.blue,
+                                    size: 58),
+                                Text('Singaraja',
+                                  style: TextStyle
+                                    (color: Colors.black54,
+                                      fontWeight: FontWeight.bold
+                                  ), )
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blue),
+                            //color: Colors.green,
+                            borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+                          ),
+
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              children: <Widget>[
+                                Icon(Icons.home, color: Colors.orangeAccent, size: 58,),
+                                Text('Lampung', style: TextStyle
+                                  (color: Colors.black54,
+                                    fontWeight: FontWeight.bold
+                                ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blue),
+                            //color: Colors.green ,
+                            borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+
+
+                          ),
+
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              children: <Widget>[
+                                Icon(Icons.music_note,color: Colors.purple, size: 58,),
+                                Text('Music', style: TextStyle
+                                  (color: Colors.black54,
+                                    fontWeight: FontWeight.bold
+                                ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blue),
+                            borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+                          ),
+
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              children: <Widget>[
+                                Icon(Icons.school, color: Colors.redAccent , size: 58,),
+                                Text('Undiksha',style: TextStyle
+                                  (color: Colors.black54,
+                                    fontWeight: FontWeight.bold
+                                ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      );
+  }
+}
